@@ -9,6 +9,7 @@
 * [Software versions](#versions)
 * [Install Docker on Ubuntu 18.04](#installation)
 * [Creating a new Magento project](#newproject)
+* [Set up an existing project](#existingproject)
 
 
 ## <a name="versions">Versions</a>
@@ -178,6 +179,7 @@ docker-compose version 1.23.0, build a133471
     ```bash
     $ docker exec -it web bash
     $ composer create-project --repository=https://repo.magento.com/ magento/project-community-edition .
+    $ composer install
     ```
         
     [More Info](https://devdocs.magento.com/guides/v2.3/install-gde/composer.html)   
@@ -205,3 +207,49 @@ docker-compose version 1.23.0, build a133471
 
 9. Follow the installation wizard. Use the previously configured database credentials.
 ![alt text](images/database-credentials.png "Installation 2")
+
+
+## Set up Magento 2 environment for existing project
+
+### <a name="existingproject">Set up Apache-php and Mysql containers</a>
+
+1. Follow 1-4 [Creating a new Magento steps](#newproject)
+
+2. Clone your Magento project into the src folder
+
+    ```bash
+    $ docker exec -it web bash
+    $ git clone {your-project-repo} .
+    $ composer install
+    ```
+
+3. Change apache user as the file owner of our files and set the right permissions following the official [Magento documentation](https://devdocs.magento.com/guides/v2.3/install-gde/prereq/file-system-perms.html)
+
+    ```bash
+    $ docker exec -it web bash
+    $ chown -R www-data:www-data .
+    $ find var generated vendor pub/static pub/media app/etc -type f -exec chmod u+w {} +
+    $ find var generated vendor pub/static pub/media app/etc -type d -exec chmod u+w {} +
+    $ chmod u+x bin/magento
+    ```
+
+4. Import the database of your project
+
+    `mysql -umagento -hdb -p magento < yourdatabase.sql`
+
+5. Put the magento database credentials in your app/etc/env.php file. By default:
+
+    ```php
+    'db' => [
+        'table_prefix' => '',
+        'connection' => [
+            'default' => [
+                'host' => 'db',
+                'dbname' => 'magento',
+                'username' => 'magento',
+                'password' => 'magento',
+                'active' => '1'
+            ]
+        ]
+    ]
+    ```
