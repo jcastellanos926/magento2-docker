@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if ls /usr/local/etc/php/conf.d/xdebug.ini 1> /dev/null 2>&1; then
+
+    # Disable Xdebug Renaming xdebug.ini file
+    mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini.copy
+    echo "Xdebug was disabled successfully"
+    service apache2 reload
+
+else
+    echo "Xdebug was already disabled"
+fi

@@ -1,0 +1,87 @@
+version: '3.7'
+services:
+  db:
+    image: db
+    build:
+      context: mysql
+    env_file:
+      - .env
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/conf/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ${MYSQL_DATA}:/var/lib/mysql
+    networks:
+      - magento2
+
+  web:
+    image: web
+    container_name: web
+    build:
+      context: web
+    env_file:
+      - .env
+    environment:
+      XDEBUG_CONFIG: remote_host=${REMOTE_IP}
+    privileged: true
+    volumes:
+      - ${MAGENTO_ROOT}:/var/www/html/src
+      - /var/www/html/src/pub/static/adminhtml
+      - /var/www/html/src/pub/static/frontend
+      - /var/www/html/src/generated/
+      - ${APACHE_DATA}:/var/log/apache2
+    ports:
+      - "80:80"
+    entrypoint: /usr/local/bin/magento/magento2-entrypoint
+    depends_on:
+      - db
+    networks:
+      magento2:
+        ipv4_address: ${MAGENTO2_CONTAINER_IP}
+
+  redis:
+    image: redis:${REDIS_VERSION}
+    command: ["redis-server", "--appendonly", "yes"]
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ${REDIS_DATA}:/data
+    networks:
+      - magento2
+
+  elasticsearch:
+    image: elasticsearch
+    container_name: elasticsearch
+    build: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9500:9300"
+    volumes:
+      - ${ELASTICSEARCH_DATA}:/usr/share/elasticsearch/data
+      - ./elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.zen.ping.unicast.hosts=elasticsearch"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - magento2
+
+networks:
+  magento2:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16

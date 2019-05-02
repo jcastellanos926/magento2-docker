@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# project_root="/var/www/html/src"
+
+# Windows hack to avoid error Device or resource busy.
+# umount $project_root/pub/static/adminhtml
+# umount $project_root/pub/static/frontend
+
+# Start apache service foreground
+/usr/sbin/apache2ctl -D FOREGROUND
