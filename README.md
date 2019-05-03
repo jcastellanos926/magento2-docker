@@ -10,6 +10,10 @@
 * [Install Docker on Ubuntu 18.04](#installation)
 * [Creating a new Magento project](#newproject)
 * [Set up an existing project](#existingproject)
+* Enable caches
+  * [Magento](#cache)
+  * [Varnish](#varnish)
+  * [Opcache](#opcache)
 
 
 ## <a name="versions">Versions</a>
@@ -253,3 +257,68 @@ docker-compose version 1.23.0, build a133471
         ]
     ]
     ```
+    
+### <a name="cache">Enable Magento Cache</a>
+
+Add the following lines to app/etc/env.php
+
+```
+    'cache_types' => [
+        'config' => 1,
+        'layout' => 1,
+        'block_html' => 1,
+        'collections' => 1,
+        'reflection' => 1,
+        'db_ddl' => 1,
+        'compiled_config' => 1,
+        'eav' => 1,
+        'customer_notification' => 1,
+        'config_integration' => 1,
+        'config_integration_api' => 1,
+        'full_page' => 1,
+        'config_webservice' => 1,
+        'translate' => 1,
+        'vertex' => 1
+    ],
+```
+
+Execute:
+
+````bash
+$ magento config:set --scope=default --scope-code=0 system/full_page_cache/caching_application 2
+````
+ 
+### <a name="opcache">Enable OPCACHE</a>
+
+Remove the semicolons (;) from opcache.ini file and reload apache
+
+`service apache2 reload`
+
+### <a name="varnish">Enable Varnish</a>
+
+1. Add the following to docker-compose.yml
+    ```
+      varnish:
+        build:
+          context: ./varnish/
+        container_name: varnish
+        depends_on:
+          - web
+        volumes:
+          - ./varnish/default.vcl:/etc/varnish/default.vcl
+          - ./varnish/varnish:/etc/default/varnish
+          - ./varnish/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+        ports:
+          - "80:80"
+          - "6082:6082"
+        networks:
+            - magento2
+    ```
+
+2. Change the port of the web docker service from `80:80` to `8080:8080`
+
+More Info:
+
+- [Configure Magento to use Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-magento.html)
+- [Final verification](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-final.html)
+
