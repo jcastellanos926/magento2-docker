@@ -14,6 +14,7 @@
   * [Magento](#cache)
   * [Varnish](#varnish)
   * [Opcache](#opcache)
+* [Elasticsearch](#elasticsearch)
 
 
 ## <a name="versions">Versions</a>
@@ -27,7 +28,7 @@
 * Xdebug: 2.6.1
 * Varnish: 4.1.10
 * Redis: 5.0.4
-* Elasticsearch: 5.6.14
+* Elasticsearch: 6.7.2
 * System: Debian GNU/Linux 9.6 (stretch)
 
 
@@ -330,3 +331,35 @@ Sources:
 - [Configure Magento to use Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-magento.html)
 - [Final verification](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-final.html)
 
+
+## <a name="elasticsearch">ELASTICSEARCH</a>
+
+1. In admin panel, go to Stores - Settings - Configuration - Catalog - Catalog Search
+
+2. Configure:
+    * Search Engine: Elasticsearch 6.0+
+    * Server Hostname: elasticsearch
+    ![alt text](images/elasticsearch-config.png "Elasticsearch Magento 2 backend configuration")
+
+2. Click on _*Test connection*_ and Save Config.
+
+3. Enable cron and reindex catalog data.
+
+    ````bash
+    $ magento cron:install
+    $ magento cron:run
+    $ magento cache:clean
+    $ magento indexer:reindex
+    ````
+
+4. Check if the indexation is finished.
+
+    ````bash
+    $ docker exec -it elasticsearch bash
+    $ curl http://localhost:9200/_cat/indices?pretty=1
+    ````
+
+![alt text](images/elasticsearch-indexes.png "Elasticsearch indexes")
+
+Sources:
+- [Install and configure Elasticsearch](https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/es-overview.html)
