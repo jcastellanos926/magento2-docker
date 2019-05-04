@@ -212,6 +212,14 @@ docker-compose version 1.23.0, build a133471
 9. Follow the installation wizard. Use the previously configured database credentials.
 ![alt text](images/database-credentials.png "Installation 2")
 
+10. Copy .htaccess and .gitignore and files from the [magento2 github repository](https://github.com/magento/magento2) to your project.
+
+    ```bash
+    $ curl -O https://raw.githubusercontent.com/magento/magento2/2.3-develop/.htaccess
+    $ curl -O https://raw.githubusercontent.com/magento/magento2/2.3-develop/.gitignore
+    $ chown www-data:www-data .gitignore .htaccess
+    $ chmod 644 .gitignore .htaccess
+    ```
 
 ## Set up Magento 2 environment for existing project
 
@@ -317,7 +325,7 @@ Remove the semicolons (;) from opcache.ini file and reload apache
 
 2. Change the port of the web docker service from `80:80` to `8080:8080`
 
-More Info:
+Sources:
 
 - [Configure Magento to use Varnish](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-magento.html)
 - [Final verification](https://devdocs.magento.com/guides/v2.3/config-guide/varnish/config-varnish-final.html)
