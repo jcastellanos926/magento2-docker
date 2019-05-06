@@ -17,6 +17,7 @@
   * [Opcache](#opcache)
 * [Elasticsearch](#elasticsearch)
 * [Xdebug](#Xdebug)
+* [Profiler](#profiler)
 
 
 ## <a name="versions">Versions</a>
@@ -416,3 +417,80 @@ $ docker exec -it web xdebug-disable
 Links:
 - [How to use Xdebug in PHPStorm](https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html)
 - [Docker Connection](https://stackoverflow.com/questions/43588317/phpstorm-xdebug-cant-find-file-when-connection-comes-from-docker-container)
+
+
+## <a name="profiler">Enable profiler in Magento 2</a>
+
+To enable or disable the html profiler:
+
+````bash
+ # enable
+ $ magento bin/magento dev:profiler:enable html
+
+ # disable
+ $ magento bin/magento dev:profiler:disable
+
+ # refresh varnish cache
+ $ docker restart varnish
+````
+
+To use the SQL profiler add the following code to the app/etc/env.php
+
+````php
+'profiler' => [
+    'class' => '\Magento\Framework\DB\Profiler',
+    'enabled' => true,
+],
+
+# For example:
+
+'db' => [
+        'table_prefix' => 'mlx_',
+        'connection' => [
+            'default' => [
+                'host' => 'db',
+                'dbname' => 'magento',
+                'username' => 'magento',
+                'password' => 'magento',
+                'model' => 'mysql4',
+                'engine' => 'innodb',
+                'initStatements' => 'SET NAMES utf8;',
+                'active' => '1',
+                'profiler' => [
+                    'class' => '\Magento\Framework\DB\Profiler',
+                    'enabled' => true,
+                ],
+            ]
+        ]
+    ],
+````
+
+Paste the following code in the index.php after `$bootstrap->run($app)`;
+
+````php
+    /** @var \Magento\Framework\App\ResourceConnection $res */
+    $res = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\App\ResourceConnection');
+    /** @var Magento\Framework\DB\Profiler $profiler */
+    $profiler = $res->getConnection('read')->getProfiler();
+    echo "<table cellpadding='0' cellspacing='0' border='1'>";
+    echo "<tr>";
+    echo "<th>Time <br/>[Total Time: ".$profiler->getTotalElapsedSecs()." secs]</th>";
+    echo "<th>SQL [Total: ".$profiler->getTotalNumQueries()." queries]</th>";
+    echo "<th>Query Params</th>";
+    echo "</tr>";
+    foreach ($profiler->getQueryProfiles() as $query) {
+        /** @var Zend_Db_Profiler_Query $query*/
+        echo '<tr>';
+        echo '<td>', number_format(1000 * $query->getElapsedSecs(), 2), 'ms', '</td>';
+        echo '<td>', $query->getQuery(), '</td>';
+        echo '<td>', json_encode($query->getQueryParams()), '</td>';
+        echo '</tr>';
+    }
+    echo "</table>";
+
+````
+
+Source:
+
+- [Html Profiler](https://devdocs.magento.com/guides/v2.3/config-guide/bootstrap/mage-profiler.html)
+- [DB Profiler](https://devdocs.magento.com/guides/v2.3/config-guide/db-profiler/db-profiler.html)
