@@ -16,6 +16,7 @@
   * [Varnish](#varnish)
   * [Opcache](#opcache)
 * [Elasticsearch](#elasticsearch)
+* [Xdebug](#Xdebug)
 
 
 ## <a name="versions">Versions</a>
@@ -398,3 +399,20 @@ Sources:
 
 Sources:
 - [Install and configure Elasticsearch](https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/es-overview.html)
+
+
+## <a name="xdebug">XDEBUG FOR PHPSTORM (Optional)</a>
+
+Enable or disable Xdebug
+
+```bash
+# Enable
+$ docker exec -it web xdebug-enable
+
+# Disable
+$ docker exec -it web xdebug-disable
+```
+
+Links:
+- [How to use Xdebug in PHPStorm](https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html)
+- [Docker Connection](https://stackoverflow.com/questions/43588317/phpstorm-xdebug-cant-find-file-when-connection-comes-from-docker-container)

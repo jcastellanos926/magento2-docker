@@ -2,10 +2,6 @@
 
 if ls /usr/local/etc/php/conf.d/xdebug.ini.copy 1> /dev/null 2>&1; then
 
-    # Put the correct IP
-    sed -in '/host.docker.internal/d' /usr/local/etc/php/conf.d/xdebug.ini.copy
-    echo "host.docker.internal=${REMOTE_IP}" >> /usr/local/etc/php/conf.d/xdebug.ini.copy
-
     # enable Xdebug
     mv /usr/local/etc/php/conf.d/xdebug.ini.copy /usr/local/etc/php/conf.d/xdebug.ini
     service apache2 reload

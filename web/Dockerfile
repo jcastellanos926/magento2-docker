@@ -73,12 +73,11 @@ RUN cd /tmp && wget -c "https://xdebug.org/files/xdebug-2.6.1.tgz" --no-check-ce
     && echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.remote_connect_back=0" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "host.docker.internal=$REMOTE_IP" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.idekey=PHPSTORM" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.max_nesting_level=1000" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "zend_extension=xdebug.so" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# Disable default xdebug configuration
+# xdebug disabled by default
 RUN mv /usr/local/etc/php/conf.d/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini.copy
 
 COPY apache-conf/smtp.ini /usr/local/etc/php/conf.d/
