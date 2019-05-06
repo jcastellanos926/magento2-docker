@@ -1,4 +1,4 @@
-# Magento 2.3 Docker Image
+# Magento 2.3 Apache Docker Image
 
 ![alt text](images/magento2.png "Magento Logo")
 ![alt text](images/docker_logo.png "Docker Logo")
