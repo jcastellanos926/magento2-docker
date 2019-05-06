@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 
-# project_root="/var/www/html/src"
-
-# Windows hack to avoid error Device or resource busy.
-# umount $project_root/pub/static/adminhtml
-# umount $project_root/pub/static/frontend
+# By default volumes folders are created by user root
+chown -R www-data:www-data ${PROJECT_ROOT}/generated ${PROJECT_ROOT}/pub
 
 # Start apache service foreground
 /usr/sbin/apache2ctl -D FOREGROUND
