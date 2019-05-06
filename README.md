@@ -12,6 +12,7 @@
 * [Set up an existing project](#existingproject)
 * Enable caches
   * [Magento](#cache)
+  * [Redis](#redis)
   * [Varnish](#varnish)
   * [Opcache](#opcache)
 * [Elasticsearch](#elasticsearch)
@@ -205,6 +206,7 @@ docker-compose version 1.23.0, build a133471
     # Magento 2 project
     127.0.0.1 local-m2.com
     127.0.0.1 db
+    127.0.0.1 redis
     ```
 
 8. Open your browser and go to your configured localhost domain
@@ -296,6 +298,39 @@ Execute:
 ````bash
 $ magento config:set --scope=default --scope-code=0 system/full_page_cache/caching_application 2
 ````
+
+### <a name="redis">Configure Redis</a>
+
+The following commands will edit the app/etc/env.php file to enable the Redis cache.
+
+Configure Redis default caching
+
+```bash
+$ bin/magento setup:config:set --cache-backend=redis --cache-backend-redis-server=redis --cache-backend-redis-db=0
+```
+
+Configure Redis page caching
+
+```bash
+$ bin/magento setup:config:set --page-cache=redis --page-cache-redis-server=redis --page-cache-redis-db=1
+```
+
+Configure Magento to use Redis for session storage
+
+```bash
+$ bin/magento setup:config:set --session-save=redis --session-save-redis-host=redis --session-save-redis-log-level=3 --session-save-redis-db=2
+```
+
+Clean cache storage manually to apply changes
+
+```bash
+$ rm -rf var/cache/*
+```
+
+Links and verification instructions:
+* [Use Redis for the Magento page and default cache](https://devdocs.magento.com/guides/v2.3/config-guide/redis/redis-pg-cache.html)
+* [Use Redis for session storage](https://devdocs.magento.com/guides/v2.3/config-guide/redis/redis-session.html)
+
  
 ### <a name="opcache">Enable OPCACHE</a>
 
