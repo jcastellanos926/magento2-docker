@@ -32,9 +32,6 @@ services:
     privileged: true
     volumes:
       - ${MAGENTO_ROOT}:/var/www/html/src
-      - /var/www/html/src/pub/static/adminhtml
-      - /var/www/html/src/pub/static/frontend
-      - /var/www/html/src/generated/
       - ${APACHE_DATA}:/var/log/apache2
     ports:
       - "80:80"
