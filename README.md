@@ -412,23 +412,26 @@ Sources:
 
 2. Click on _*Test connection*_ and Save Config.
 
-3. Enable cron and reindex catalog data.
+3. Reindex catalog data.
 
     ````bash
-    $ magento cron:install
-    $ magento cron:run
-    $ magento cache:clean
     $ magento indexer:reindex
+    $ magento cache:clean
     ````
 
-4. Check if the indexation is finished.
+4. Verify that Elasticsearch is working:
 
     ````bash
     $ docker exec -it elasticsearch bash
-    $ curl http://localhost:9200/_cat/indices?pretty=1
+    $ curl http://localhost:9200/_cat/health?v&pretty
     ````
 
-![alt text](images/elasticsearch-indexes.png "Elasticsearch indexes")
+If correct, a message similar to the following will be displayed:
+
+```bash
+ epoch      timestamp cluster       status node.total node.data shards pri relo init unassign pending_tasks
+ 1519701563 03:19:23  elasticsearch green           1         1      0   0    0    0        0             0
+```
 
 Sources:
 - [Install and configure Elasticsearch](https://devdocs.magento.com/guides/v2.3/config-guide/elasticsearch/es-overview.html)
