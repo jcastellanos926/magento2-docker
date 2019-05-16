@@ -11,6 +11,7 @@
 * [Creating a new Magento project](#newproject)
   * [Installation via Wizard](#via-wizard)
   * [Installation via Script](#via-script)
+  * [Sample Data](#sample-data)
 * [Set up an existing project](#existingproject)
 * [Flip into developer mode](#devmode)
 * Enable caches
@@ -245,6 +246,16 @@ $ docker-compose restart
 To execute, run:
 ```bash
 $ docker exec -it web install
+```
+
+#### <a name="sample-data">Sample data</a>
+
+Look for your repo.magento.com credentials in the auth.json file and run:
+```bash
+$ docker exec -it web bash
+$ magento sampledata:deploy
+$ magento setup:upgrade
+$ magento cache:clean
 ```
 
 ## Set up Magento 2 environment for existing project
