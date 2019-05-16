@@ -10,6 +10,7 @@
 * [Install Docker on Ubuntu 18.04](#installation)
 * [Creating a new Magento project](#newproject)
 * [Set up an existing project](#existingproject)
+* [Flip into developer mode](#devmode)
 * Enable caches
   * [Magento](#cache)
   * [Redis](#redis)
@@ -494,3 +495,9 @@ Source:
 
 - [Html Profiler](https://devdocs.magento.com/guides/v2.3/config-guide/bootstrap/mage-profiler.html)
 - [DB Profiler](https://devdocs.magento.com/guides/v2.3/config-guide/db-profiler/db-profiler.html)
+
+## <a name="devmode">Flip the system into developer mode</a>
+
+```bash
+$  php bin/magento deploy:mode:set developer
+```
