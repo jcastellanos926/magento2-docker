@@ -9,6 +9,8 @@
 * [Software versions](#versions)
 * [Install Docker on Ubuntu 18.04](#installation)
 * [Creating a new Magento project](#newproject)
+  * [Installation via Wizard](#via-wizard)
+  * [Installation via Script](#via-script)
 * [Set up an existing project](#existingproject)
 * [Flip into developer mode](#devmode)
 * Enable caches
@@ -212,13 +214,7 @@ docker-compose version 1.23.0, build a133471
     127.0.0.1 redis
     ```
 
-8. Open your browser and go to your configured localhost domain
-![alt text](images/landing-install.png "Installation 1")
-
-9. Follow the installation wizard. Use the previously configured database credentials.
-![alt text](images/database-credentials.png "Installation 2")
-
-10. Copy .htaccess and .gitignore and files from the [magento2 github repository](https://github.com/magento/magento2) to your project.
+8. Copy .htaccess and .gitignore and files from the [magento2 github repository](https://github.com/magento/magento2) to your project.
 
     ```bash
     $ curl -O https://raw.githubusercontent.com/magento/magento2/2.3-develop/.htaccess
@@ -226,6 +222,30 @@ docker-compose version 1.23.0, build a133471
     $ chown www-data:www-data .gitignore .htaccess
     $ chmod 644 .gitignore .htaccess
     ```
+
+#### <a name="via-wizard">Installation via Magento Wizard</a>
+
+1. Open your browser and go to your configured localhost domain
+![alt text](images/landing-install.png "Installation 1")
+
+2. Follow the installation wizard. Use the previously configured database credentials.
+![alt text](images/database-credentials.png "Installation 2")
+
+#### <a name="via-script">Installation via Magento Script</a>
+
+Alternatively, we can install Magento using an installation script.
+
+Open the file `web/bin/install` and put your database and Admin User credentials.
+
+Restart the Docker containers to be sure that your changes were applied successfully.
+```
+$ docker-compose restart
+```
+
+To execute, run:
+```bash
+$ docker exec -it web install
+```
 
 ## Set up Magento 2 environment for existing project
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 bin/magento setup:install --base-url=http://local-m2.com \
 --db-host=db --db-name=magento --db-user=magento --db-password=magento \
 --admin-firstname=magento --admin-lastname=magento --admin-email=user@example.com \
